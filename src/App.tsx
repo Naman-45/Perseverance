@@ -1,14 +1,21 @@
-import Navbar from "./Components/Navbar";
-import Login from "./Components/Login";
+import Navbar from "./Components/Navbar.tsx";
+import Login from "./Components/Login.tsx";
+import Landing from "./Components/Landing.tsx";
+import Signup from "./Components/Signup.tsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
 
-
   return (
     <div className="h-screen bg-slate-300">
-      <Navbar />
-      <Login />
-
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path={"/"} element={<Landing />} />
+          <Route path={"/Login"} element={<Login />} />
+          <Route path={"/Signup"} element={<Signup />} />
+        </Routes>
+      </Router>
     </div>
   )
 }
