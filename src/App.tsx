@@ -11,7 +11,7 @@ import * as React from 'react';
 function App() {
 
   return (
-    <div className="h-screen bg-slate-300">
+    <div className="h-screen bg-blue-50">
       <Router>
         <Navbar />
         <Routes>
