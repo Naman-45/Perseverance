@@ -1,16 +1,18 @@
 import Button from '@mui/material/Button';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
     return (
-        <div className="text-4xl bg-slate-500 h-16 flex justify-between">
-            <h1>Perseverance</h1>
-            <div className='m-auto'>
+        <div className="text-4xl bg-red-500 h-16 flex justify-between">
+            <div><h1>Perseverance</h1></div>
+            <div className='w-48'>
                 <Button variant="text" onClick={() => {
-                    <Navigate to="/Login" />
+                    navigate("/Login");
                 }}>Login</Button>
                 <Button variant="text" onClick={() => {
-                    <Navigate to="/Signup" />
+                    navigate("/Signup");
                 }}>Signup</Button>
             </div>
         </div>

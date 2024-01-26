@@ -2,7 +2,11 @@ import Navbar from "./Components/Navbar.tsx";
 import Login from "./Components/Login.tsx";
 import Landing from "./Components/Landing.tsx";
 import Signup from "./Components/Signup.tsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import * as React from 'react';
+
 
 function App() {
 
