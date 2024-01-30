@@ -3,25 +3,71 @@ import Login from "./Components/Login.tsx";
 import Landing from "./Components/Landing.tsx";
 import Signup from "./Components/Signup.tsx";
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import * as React from 'react';
+import { RecoilRoot, useSetRecoilState } from "recoil";
+import { user } from './store/atoms/user.js';
+import axios from 'axios';
+import { useEffect } from 'react';
+
+
 
 
 function App() {
 
   return (
     <div className="h-screen bg-blue-50">
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path={"/"} element={<Landing />} />
-          <Route path={"/Login"} element={<Login />} />
-          <Route path={"/Signup"} element={<Signup />} />
-        </Routes>
-      </Router>
+      <RecoilRoot>
+        <Router>
+          <Navbar />
+          <Init />
+          <Routes>
+            <Route path={"/"} element={<Landing />} />
+            <Route path={"/Login"} element={<Login />} />
+            <Route path={"/Signup"} element={<Signup />} />
+          </Routes>
+        </Router>
+      </RecoilRoot>
     </div>
   )
+}
+
+function Init() {
+  const setUser = useSetRecoilState(user);
+  const init = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/user/me',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        }
+      )
+
+      if (response.data.username) {
+        setUser({
+          userEmail: response.data.username,
+          isLoading: false,
+        })
+      }
+      else {
+        setUser({
+          isLoading: false,
+          userEmail: null
+        })
+      }
+    }
+    catch (e) {
+      setUser({
+        isLoading: false,
+        userEmail: null
+      })
+    }
+  }
+  useEffect(() => {
+    init();
+  }
+    , [])
+  return <></>
+
 }
 
 export default App

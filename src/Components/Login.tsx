@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 
 
@@ -10,9 +10,11 @@ import TextField from '@mui/material/TextField';
 const Login = () => {
     const [User, setUser] = useState('');
     const [Password, setPassword] = useState('');
+    const navigate = useNavigate();
+
 
     return (
-        <div className='flex justify-center items-center'>
+        <div className='flex justify-center w-screen h-screen'>
             <Card sx={{ maxWidth: 345 }}>
                 <TextField id="outlined-basic" label="Username" variant="outlined" onChange={(e) => {
                     setUser(e.target.value)
@@ -30,7 +32,7 @@ const Login = () => {
                         })
                     const Data = res.data;
                     localStorage.setItem("token", Data.token);
-                    <Navigate to="/Userpanel" />
+                    navigate("/UserPanel");
 
                 }}>Submit</Button>
             </Card>

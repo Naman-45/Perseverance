@@ -151,6 +151,18 @@ app.get('/admin/courses', jwtVerificationAdmin, async (req, res) => {
   });
 });
 
+app.get('/users/me', jwtVerificationUser, async (req, res) => {
+  const user = await Users.findOne({ username: req.user.username });
+  if (!user) {
+    res.status(404).json({ message: 'User does not exists' });
+  }
+  else {
+    res.json({
+      username: user.username
+    })
+  }
+})
+
 // User routes
 app.post('/users/signup', async (req, res) => {
   // logic to sign up user
