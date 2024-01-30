@@ -22,21 +22,6 @@ const Navbar = () => {
                 <div><h1 className='ml-2 mt-2 font-serif'>Perseverance</h1></div>
                 <div className='w-52 h-16 flex justify-around items-center'>
                     <Button variant="text" size="large" onClick={() => {
-                        navigate("/Login");
-                    }}>Login</Button>
-                    <Button variant="contained" onClick={() => {
-                        navigate("/Signup");
-                    }}>Signup</Button>
-                </div>
-            </div>
-        )
-    }
-    else {
-        return (
-            <div className="text-4xl bg-red-500 h-16 flex justify-between">
-                <div><h1 className='ml-2 mt-2 font-serif'>Perseverance</h1></div>
-                <div className='w-52 h-16 flex justify-around items-center'>
-                    <Button variant="text" size="large" onClick={() => {
                         navigate("/viewCourses");
                     }}>viewCourses</Button>
                     <Button variant="contained" onClick={() => {
@@ -50,6 +35,22 @@ const Navbar = () => {
                 </div>
             </div>
         )
+    }
+    else {
+        return (
+            <div className="text-4xl bg-red-500 h-16 flex justify-between">
+                <div><h1 className='ml-2 mt-2 font-serif'>Perseverance</h1></div>
+                <div className='w-52 h-16 flex justify-around items-center'>
+                    <Button variant="text" size="large" onClick={() => {
+                        navigate("/Login");
+                    }}>Login</Button>
+                    <Button variant="contained" onClick={() => {
+                        navigate("/Signup");
+                    }}>Signup</Button>
+                </div>
+            </div>
+        )
+
     }
 
 }
