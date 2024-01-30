@@ -34,7 +34,7 @@ function Init() {
   const setUser = useSetRecoilState(user);
   const init = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/user/me',
+      const response = await axios.get('http://localhost:3000/users/me',
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -44,21 +44,21 @@ function Init() {
 
       if (response.data.username) {
         setUser({
-          userEmail: response.data.username,
           isLoading: false,
+          userEmail: response.data.username,
         })
       }
       else {
         setUser({
           isLoading: false,
-          userEmail: null
+          userEmail: null,
         })
       }
     }
     catch (e) {
       setUser({
         isLoading: false,
-        userEmail: null
+        userEmail: null,
       })
     }
   }
@@ -66,6 +66,7 @@ function Init() {
     init();
   }
     , [])
+
   return <></>
 
 }
