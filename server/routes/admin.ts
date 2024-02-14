@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
 import express, { json } from 'express';
-import { Users, Admins, Courses } from '../db/index'
+import { Admins, Courses } from '../db/index'
 import { jwtVerificationAdmin } from '../middlewares/jwt';
 import jwt from 'jsonwebtoken';
 import { adminAuthentication } from '../middlewares/auth';
@@ -8,15 +8,15 @@ import { admintype } from '../middlewares/auth'
 
 const app = express();
 
-type EnvironmentVariables = {
-    secret_key_user: string;
-    secret_key_admin: string;
-};
-const env: EnvironmentVariables = process.env as EnvironmentVariables
+// // type EnvironmentVariables = {
+// //     secret_key_user: string;
+// //     secret_key_admin: string;
+// // };
+// const env: EnvironmentVariables = process.env as EnvironmentVariables
 
-const secret_key_user: string = env.secret_key_user;
-const secret_key_admin: string = env.secret_key_admin;
+// const secret_key_admin: string = env.secret_key_admin;
 
+const secret_key_admin: (string | undefined) = process.env.secret_key_admin || 'Alrightthisisit45';
 
 const generateTokenAdmin = (user: admintype) => {
     return jwt.sign(user, secret_key_admin, { expiresIn: '1h' });

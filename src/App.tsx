@@ -37,7 +37,7 @@ function Init() {
       const response = await axios.get('http://localhost:3000/users/me',
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${window.localStorage.getItem('token')}`,
           }
         }
       )

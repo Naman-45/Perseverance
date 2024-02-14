@@ -1,43 +1,57 @@
-
 import axios from 'axios';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
 
 const Signup = () => {
     const [User, setUser] = useState('');
     const [Password, setPassword] = useState('');
+    const navigate = useNavigate();
 
+    const handleClick = async (e) => {
+        e.preventDefault();
+
+        const res = await axios.post("http://localhost:3000/users/signup", null,
+            {
+                headers: {
+                    username: User,
+                    password: Password
+                }
+            })
+        if (res.status >= 200 && res.status < 300) {
+            console.log(res.data.message);
+            navigate("/");
+        }
+        else {
+            console.log(res.data.message);
+        }
+    }
     return (
-        <div>
-            <div className='flex justify-center items-center'>
-                <Card sx={{ maxWidth: 345 }}>
-                    <TextField id="outlined-basic" label="Username" variant="outlined" onChange={(e) => {
-                        setUser(e.target.value)
-                    }} /> <br />
-                    <TextField id="outlined-basic" label="Password" variant="outlined" onChange={(e) => {
-                        setPassword(e.target.value)
-                    }} />
-                    <Button variant="outlined" onClick={async () => {
-                        const res = await axios.post("http://localhost:3000/users/signup",
-                            {
-                                headers: {
-                                    username: User,
-                                    password: Password
-                                }
-                            })
-                        if (res.data) {
-                            <Navigate to="/" />
-                        }
+        <div className='h-screen flex justify-center items-center'>
+            <div>
+                <div>
+                    <h1 className='font-serif'>Welcome to Preseverance, Signup!</h1>
+                    <span>Pathway to success.</span>
+                </div>
+                <form>
+                    <div className="grid w-full items-center gap-4">
+                        <div className="flex flex-col space-y-1.5">
+                            <label htmlFor="username">Username</label>
+                            <input type="text" id="username" placeholder="Enter Username" onChange={(e) => {
+                                setUser(e.target.value)
+                            }} /></div>
+                        <div className="flex flex-col space-y-1.5">
+                            <label htmlFor="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter Password" onChange={(e) => {
+                                setPassword(e.target.value)
+                            }} />
+                        </div>
+                    </div>
+                    <button onClick={handleClick} type="submit">Signup</button>
 
-                    }}>Signup</Button>
-                </Card>
+                </form>
+            </div>
+        </div >
 
-
-            </div >
-        </div>
     )
 }
 

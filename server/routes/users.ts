@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
 import express, { json } from 'express';
-import { Users, Admins, Courses } from '../db/index'
+import { Users, Courses } from '../db/index'
 import { jwtVerificationUser } from '../middlewares/jwt';
 import { admintype, userAuthentication } from '../middlewares/auth';
 import jwt from 'jsonwebtoken';
@@ -10,14 +10,15 @@ import { ObjectId } from 'mongoose';
 const app = express();
 
 
-type EnvironmentVariables = {
-    secret_key_user: string;
-    secret_key_admin: string;
-};
-const env: EnvironmentVariables = process.env as EnvironmentVariables
+// type EnvironmentVariables = {
+//     secret_key_user: string;
+//     secret_key_admin: string;
+// };
+// const env: EnvironmentVariables = process.env as EnvironmentVariables
 
-const secret_key_user: string = env.secret_key_user;
-const secret_key_admin: string = env.secret_key_admin;
+// const secret_key_user: string = env.secret_key_user;
+
+const secret_key_user: (string | undefined) = process.env.secret_key_user || 'IwillsettleForthis02';
 
 const generateTokenUser = (user: usertype) => {
     return jwt.sign(user, secret_key_user, { expiresIn: '1h' });
@@ -30,7 +31,7 @@ app.get('/me', jwtVerificationUser, async (req, res) => {
         res.status(404).json({ message: 'User does not exists' });
     }
     else {
-        res.json({
+        res.status(200).json({
             username: user.username
         })
     }
@@ -42,18 +43,18 @@ app.post('/signup', async (req, res) => {
         const user = { ...req.headers as unknown as admintype, purchasedCourses: [] as ObjectId[] }
         const existingUser = await Users.findOne({ username: user.username });
         if (existingUser) {
-            res.json({ message: 'User already exists' });
+            res.status(409).json({ message: 'User already exists' });
         }
         else {
-            const newUser = new Admins(user)
+            const newUser = new Users(user)
             await newUser.save();
-            res.json({ message: 'User created successfully' });
+            res.status(201).json({ message: 'User created successfully' });
         }
 
     } catch (err) {
 
         console.error('Error while processing user signup:', err);
-        res.json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 
 

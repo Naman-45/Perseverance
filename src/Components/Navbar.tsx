@@ -19,7 +19,9 @@ const Navbar = () => {
     if (useremail) {
         return (
             <div className="text-4xl bg-red-500 h-16 flex justify-between">
-                <div><h1 className='ml-2 mt-2 font-serif'>Perseverance</h1></div>
+                <div><h1 className='ml-2 mt-2 font-serif cursor-pointer' onClick={() => {
+                    navigate("/");
+                }}>Perseverance</h1></div>
                 <div className='w-52 h-16 flex justify-around items-center'>
                     <Button variant="text" size="large" onClick={() => {
                         navigate("/viewCourses");
@@ -30,7 +32,7 @@ const Navbar = () => {
                             isLoading: false,
                             userEmail: null,
                         })
-                        navigate("/Landing");
+                        navigate("/");
                     }}>Logout</Button>
                 </div>
             </div>
@@ -39,7 +41,9 @@ const Navbar = () => {
     else {
         return (
             <div className="text-4xl bg-red-500 h-16 flex justify-between">
-                <div><h1 className='ml-2 mt-2 font-serif'>Perseverance</h1></div>
+                <div><h1 className='ml-2 mt-2 font-serif cursor-pointer' onClick={() => {
+                    navigate("/");
+                }}>Perseverance</h1></div>
                 <div className='w-52 h-16 flex justify-around items-center'>
                     <Button variant="text" size="large" onClick={() => {
                         navigate("/Login");
