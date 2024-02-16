@@ -37,7 +37,8 @@ function Init() {
       const response = await axios.get('http://localhost:3000/users/me',
         {
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+            "Content-Type": 'application/json',
+            'authorization': "Bearer " + window.localStorage.getItem('token'),
           }
         }
       )

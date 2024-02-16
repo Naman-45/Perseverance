@@ -13,7 +13,7 @@ const Navbar = () => {
     const isLoading = useRecoilValue(isUserLoading);
 
     if (isLoading) {
-        return <></>
+        return <>Loading...</>
     }
 
     if (useremail) {

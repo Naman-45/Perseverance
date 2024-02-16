@@ -1,28 +1,30 @@
-import { sign, verify } from 'jsonwebtoken';
 import express, { json } from 'express';
 import { Users, Courses } from '../db/index'
 import { jwtVerificationUser } from '../middlewares/jwt';
-import { admintype, userAuthentication } from '../middlewares/auth';
 import jwt from 'jsonwebtoken';
-import { usertype } from '../middlewares/auth';
 import { ObjectId } from 'mongoose';
+
+
+interface usertype {
+    username: string,
+    password: string,
+    purchasedCourses: ObjectId[]
+}
+
+interface admintype {
+    username: string,
+    password: string,
+}
 
 const app = express();
 
-
-// type EnvironmentVariables = {
-//     secret_key_user: string;
-//     secret_key_admin: string;
-// };
-// const env: EnvironmentVariables = process.env as EnvironmentVariables
-
-// const secret_key_user: string = env.secret_key_user;
-
 const secret_key_user: (string | undefined) = process.env.secret_key_user || 'IwillsettleForthis02';
 
-const generateTokenUser = (user: usertype) => {
-    return jwt.sign(user, secret_key_user, { expiresIn: '1h' });
-}
+// const generateTokenUser = (user: usertype) => {
+
+//     return jwt.sign(user, secret_key_user);
+
+// }
 
 
 app.get('/me', jwtVerificationUser, async (req, res) => {
@@ -39,8 +41,10 @@ app.get('/me', jwtVerificationUser, async (req, res) => {
 
 app.post('/signup', async (req, res) => {
     // logic to sign up user
+    const { username, password } = req.headers;
     try {
-        const user = { ...req.headers as unknown as admintype, purchasedCourses: [] as ObjectId[] }
+        console.log(req.headers);
+        const user = { username: username, password: password, purchasedCourses: [] } as usertype
         const existingUser = await Users.findOne({ username: user.username });
         if (existingUser) {
             res.status(409).json({ message: 'User already exists' });
@@ -48,11 +52,11 @@ app.post('/signup', async (req, res) => {
         else {
             const newUser = new Users(user)
             await newUser.save();
+            console.log('in user signup route');
             res.status(201).json({ message: 'User created successfully' });
         }
 
     } catch (err) {
-
         console.error('Error while processing user signup:', err);
         res.status(500).json({ message: 'Internal server error' });
     }
@@ -60,13 +64,16 @@ app.post('/signup', async (req, res) => {
 
 });
 
-app.post('/login', userAuthentication, async (req, res) => {
+app.post('/login', async (req, res) => {
     // logic to log in user
-    const user = await Users.findOne(req.headers) as usertype
-
+    const { username, password } = req.headers;
+    const user = await Users.findOne({ username: username, password: password }) as usertype
+    console.log(user);
     if (user) {
-        const token = generateTokenUser(user);
-        res.json({ message: 'Logged in successfully', Token: token });
+
+        // const token = generateTokenUser(user);
+        // console.log(token);
+        // res.json({ message: 'User Logged in successfully', token: token });
     }
     else {
         res.json({ message: 'User not found' });

@@ -12,11 +12,11 @@ const secret_key_user: (string | undefined) = process.env.secret_key_user || 'Iw
 const secret_key_admin: (string | undefined) = process.env.secret_key_admin || 'Alrightthisisit45';
 
 export const jwtVerificationAdmin = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.header('authorization');
     if (authHeader) {
         const Token = authHeader.split(' ')[1];
         jwt.verify(Token, secret_key_admin, (err, user) => {
-            if (err) throw err;
+            if (err) throw res.sendStatus(401);
             req.body = user;
             next();
         })
@@ -27,11 +27,11 @@ export const jwtVerificationAdmin = (req: Request, res: Response, next: NextFunc
 }
 
 export const jwtVerificationUser = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.header('authorization');
     if (authHeader) {
         const Token = authHeader.split(' ')[1];
         verify(Token, secret_key_user, (err, user) => {
-            if (err) throw err;
+            if (err) throw res.sendStatus(401);
             req.body = user;
             next();
         })

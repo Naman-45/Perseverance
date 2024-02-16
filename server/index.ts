@@ -13,7 +13,7 @@ app.use('/admin', adminRoutes);
 app.use('/users', userRoutes);
 
 
-connect('mongodb+srv://namandevv45:REoyCgljCUv02b7c@cluster0.sfelgwu.mongodb.net/Course-selling-website');
+connect('mongodb+srv://namandevv45:REoyCgljCUv02b7c@cluster0.sfelgwu.mongodb.net/Course-selling-website', { dbName: 'Course-selling-website' });
 
 app.listen(3000, () => {
   console.log('Server is listening on port 3000');

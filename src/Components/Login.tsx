@@ -20,8 +20,9 @@ const Login = () => {
         const res = await axios.post("http://localhost:3000/users/login", null,
             {
                 headers: {
-                    username: User,
-                    password: Password
+                    'username': User,
+                    'password': Password,
+                    'Content-Type': 'application/json'
                 }
             })
         if (res.status >= 200 && res.status < 300) {
@@ -30,8 +31,8 @@ const Login = () => {
                 isLoading: false,
                 userEmail: User
             })
-            localStorage.setItem("token", Data.token);
-            navigate("/UserPanel");
+            window.localStorage.setItem("token", Data.token);
+            navigate("/");
         }
     }
 

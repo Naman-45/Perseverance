@@ -1,37 +1,31 @@
-import { sign, verify } from 'jsonwebtoken';
 import express, { json } from 'express';
 import { Admins, Courses } from '../db/index'
 import { jwtVerificationAdmin } from '../middlewares/jwt';
 import jwt from 'jsonwebtoken';
-import { adminAuthentication } from '../middlewares/auth';
-import { admintype } from '../middlewares/auth'
+
+interface admintype {
+    username: string,
+    password: string,
+}
 
 const app = express();
-
-// // type EnvironmentVariables = {
-// //     secret_key_user: string;
-// //     secret_key_admin: string;
-// // };
-// const env: EnvironmentVariables = process.env as EnvironmentVariables
-
-// const secret_key_admin: string = env.secret_key_admin;
 
 const secret_key_admin: (string | undefined) = process.env.secret_key_admin || 'Alrightthisisit45';
 
 const generateTokenAdmin = (user: admintype) => {
-    return jwt.sign(user, secret_key_admin, { expiresIn: '1h' });
+    return jwt.sign(user, secret_key_admin);
 }
-
 
 app.post('/admin/signup', async (req, res) => {
     // logic to sign up admin
     try {
-        const admin = req.headers;
-        const existingAdmin = await Admins.findOne({ username: admin.username });
+        const { username, password } = req.headers;
+        const existingAdmin = await Admins.findOne({ username: username });
         if (existingAdmin) {
             res.json({ message: 'Admin already exists' });
         }
         else {
+            const admin = { username: username, password: password }
             const newAdmin = new Admins(admin)
             await newAdmin.save();
             res.json({ message: 'Admin created successfully' });
@@ -45,12 +39,13 @@ app.post('/admin/signup', async (req, res) => {
 
 });
 
-app.post('/login', adminAuthentication, async (req, res) => {
-    // logic to log in admin
-    const user = await Admins.findOne(req.headers) as admintype
+app.post('/login', async (req, res) => {
+
+    const { username, password } = req.headers;
+    const user = await Admins.findOne({ username: username, password: password }) as admintype
     if (user) {
         const token = generateTokenAdmin(user);
-        res.json({ message: 'Logged in successfully', Token: token });
+        res.json({ message: 'Admin Logged in successfully', token: token });
     }
     else {
         res.json({ message: 'Admin not found' });

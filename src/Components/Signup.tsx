@@ -13,8 +13,9 @@ const Signup = () => {
         const res = await axios.post("http://localhost:3000/users/signup", null,
             {
                 headers: {
-                    username: User,
-                    password: Password
+                    'username': User,
+                    'password': Password,
+                    'Content-Type': 'applicaiton/json'
                 }
             })
         if (res.status >= 200 && res.status < 300) {
