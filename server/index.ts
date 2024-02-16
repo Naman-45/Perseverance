@@ -4,6 +4,8 @@ import cors from 'cors';
 import adminRoutes from './routes/admin';
 import userRoutes from './routes/users'
 
+
+
 const app = express();
 
 app.use(cors());

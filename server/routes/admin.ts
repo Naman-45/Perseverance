@@ -2,24 +2,29 @@ import express, { json } from 'express';
 import { Admins, Courses } from '../db/index'
 import { jwtVerificationAdmin } from '../middlewares/jwt';
 import jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongoose';
+
 
 interface admintype {
+    _id: ObjectId,
     username: string,
     password: string,
 }
-
 const app = express();
 
 const secret_key_admin: (string | undefined) = process.env.secret_key_admin || 'Alrightthisisit45';
 
-const generateTokenAdmin = (user: admintype) => {
-    return jwt.sign(user, secret_key_admin);
+const generateTokenAdmin = (userid: ObjectId) => {
+    const payload = {
+        _id: userid
+    }
+    return jwt.sign(payload, secret_key_admin)
 }
 
 app.post('/admin/signup', async (req, res) => {
     // logic to sign up admin
     try {
-        const { username, password } = req.headers;
+        const { username, password } = req.body;
         const existingAdmin = await Admins.findOne({ username: username });
         if (existingAdmin) {
             res.json({ message: 'Admin already exists' });
@@ -41,10 +46,10 @@ app.post('/admin/signup', async (req, res) => {
 
 app.post('/login', async (req, res) => {
 
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
     const user = await Admins.findOne({ username: username, password: password }) as admintype
     if (user) {
-        const token = generateTokenAdmin(user);
+        const token = generateTokenAdmin(user._id);
         res.json({ message: 'Admin Logged in successfully', token: token });
     }
     else {

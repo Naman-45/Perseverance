@@ -5,13 +5,17 @@ import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
 
 
+
+
 interface usertype {
+    _id: ObjectId,
     username: string,
     password: string,
     purchasedCourses: ObjectId[]
 }
 
 interface admintype {
+    _id: ObjectId,
     username: string,
     password: string,
 }
@@ -20,11 +24,12 @@ const app = express();
 
 const secret_key_user: (string | undefined) = process.env.secret_key_user || 'IwillsettleForthis02';
 
-// const generateTokenUser = (user: usertype) => {
-
-//     return jwt.sign(user, secret_key_user);
-
-// }
+const generateTokenUser = (userid: ObjectId) => {
+    const payload = {
+        _id: userid
+    }
+    return jwt.sign(payload, secret_key_user)
+}
 
 
 app.get('/me', jwtVerificationUser, async (req, res) => {
@@ -41,10 +46,9 @@ app.get('/me', jwtVerificationUser, async (req, res) => {
 
 app.post('/signup', async (req, res) => {
     // logic to sign up user
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
     try {
-        console.log(req.headers);
-        const user = { username: username, password: password, purchasedCourses: [] } as usertype
+        const user = { username: username, password: password, purchasedCourses: [] }
         const existingUser = await Users.findOne({ username: user.username });
         if (existingUser) {
             res.status(409).json({ message: 'User already exists' });
@@ -52,7 +56,6 @@ app.post('/signup', async (req, res) => {
         else {
             const newUser = new Users(user)
             await newUser.save();
-            console.log('in user signup route');
             res.status(201).json({ message: 'User created successfully' });
         }
 
@@ -66,14 +69,11 @@ app.post('/signup', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     // logic to log in user
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
     const user = await Users.findOne({ username: username, password: password }) as usertype
-    console.log(user);
     if (user) {
-
-        // const token = generateTokenUser(user);
-        // console.log(token);
-        // res.json({ message: 'User Logged in successfully', token: token });
+        const token = generateTokenUser(user._id);
+        res.json({ message: 'User Logged in successfully', token: token });
     }
     else {
         res.json({ message: 'User not found' });

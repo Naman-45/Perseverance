@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verify } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 
+
 type EnvironmentVariables = {
     secret_key_user: string;
     secret_key_admin: string;
