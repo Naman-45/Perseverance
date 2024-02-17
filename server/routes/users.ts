@@ -3,9 +3,7 @@ import { Users, Courses } from '../db/index'
 import { jwtVerificationUser } from '../middlewares/jwt';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
-
-
-
+import { userInput } from '../zod/types';
 
 interface usertype {
     _id: ObjectId,
@@ -46,37 +44,54 @@ app.get('/me', jwtVerificationUser, async (req, res) => {
 
 app.post('/signup', async (req, res) => {
     // logic to sign up user
-    const { username, password } = req.body;
-    try {
-        const user = { username: username, password: password, purchasedCourses: [] }
-        const existingUser = await Users.findOne({ username: user.username });
-        if (existingUser) {
-            res.status(409).json({ message: 'User already exists' });
-        }
-        else {
-            const newUser = new Users(user)
-            await newUser.save();
-            res.status(201).json({ message: 'User created successfully' });
-        }
-
-    } catch (err) {
-        console.error('Error while processing user signup:', err);
-        res.status(500).json({ message: 'Internal server error' });
+    const parsedInput = userInput.safeParse(req.body);
+    if (!parsedInput.success) {
+        res.status(411).json({
+            message: parsedInput.error
+        })
     }
+    if (parsedInput.success) {
+        const username = parsedInput.data.username;
+        const password = parsedInput.data.password;
+        try {
+            const user = { username: username, password: password, purchasedCourses: [] }
+            const existingUser = await Users.findOne({ username: user.username });
+            if (existingUser) {
+                res.status(409).json({ message: 'User already exists' });
+            }
+            else {
+                const newUser = new Users(user)
+                await newUser.save();
+                res.status(201).json({ message: 'User created successfully' });
+            }
 
+        } catch (err) {
+            console.error('Error while processing user signup:', err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 
 });
 
 app.post('/login', async (req, res) => {
     // logic to log in user
-    const { username, password } = req.body;
-    const user = await Users.findOne({ username: username, password: password }) as usertype
-    if (user) {
-        const token = generateTokenUser(user._id);
-        res.json({ message: 'User Logged in successfully', token: token });
+    const parsedInput = userInput.safeParse(req.body);
+    if (!parsedInput.success) {
+        res.status(411).json({
+            message: parsedInput.error
+        })
     }
-    else {
-        res.json({ message: 'User not found' });
+    if (parsedInput.success) {
+        const username = parsedInput.data.username;
+        const password = parsedInput.data.password;
+        const user = await Users.findOne({ username: username, password: password }) as usertype
+        if (user) {
+            const token = generateTokenUser(user._id);
+            res.json({ message: 'User Logged in successfully', token: token });
+        }
+        else {
+            res.json({ message: 'User not found' });
+        }
     }
 });
 

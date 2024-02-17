@@ -10,12 +10,13 @@ const Signup = () => {
     const handleClick = async (e) => {
         e.preventDefault();
 
-        const res = await axios.post("http://localhost:3000/users/signup", null,
+        const res = await axios.post("http://localhost:3000/users/signup", {
+            'username': User,
+            'password': Password,
+        },
             {
                 headers: {
-                    'username': User,
-                    'password': Password,
-                    'Content-Type': 'applicaiton/json'
+                    'Content-Type': 'application/json'
                 }
             })
         if (res.status >= 200 && res.status < 300) {

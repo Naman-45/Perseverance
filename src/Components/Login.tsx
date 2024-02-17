@@ -17,11 +17,12 @@ const Login = () => {
     const handleClick = async (e) => {
         e.preventDefault();
 
-        const res = await axios.post("http://localhost:3000/users/login", null,
+        const res = await axios.post("http://localhost:3000/users/login", {
+            'username': User,
+            'password': Password,
+        },
             {
                 headers: {
-                    'username': User,
-                    'password': Password,
                     'Content-Type': 'application/json'
                 }
             })
